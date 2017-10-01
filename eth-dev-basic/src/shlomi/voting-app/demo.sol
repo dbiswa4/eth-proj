@@ -62,6 +62,21 @@ contract User is mortal {
     }
 
 
+    //People need to pay the bill to service provider
+    //Need to have two type of arguments
+    //Address of the service provider and debt
+    //If we allow user to interact with setDebt(), then they can change the debt from let's say 10 to 2 and pay just 2
+    //We want only the provider to set a new debt and remove the privilege from user itself. How do we do it?
+    function setDebt(address _providerAddress, uint _debt) {
+        if(services[_providerAddress].active){
+        services[_providerAddress].lastUpdate = now;
+        services[_providerAddress].debt = debt;
+        } else {
+        revert();
+        }
+
+    }
+
 }
 
 contract Provider is mortal {
@@ -72,6 +87,21 @@ contract Provider is mortal {
     function Provider(string _name, string _description) {
         providerName = _name;
         description = _description;
+    }
+
+    //Provider will specifically set the debt for a specific User address of a specific user contract
+    function setDebt(uint256 _debt, address _userAddress){
+
+        //Create a new object of type User Contract
+        //This person is a user contract of following address
+        //Declaring a new type of object User. This User object refers to User contract above. The var name is person.
+        //It will get all the functionality of User contract which is deployed in _userAddress address
+        //Now, Provider contract can directly interact with the User contract which is on _userAddress address
+        //It can do so using the person object
+        User person = new User(_userAddress);
+        //person.setDebt(uint256 _debt);
+
+
     }
 }
 
